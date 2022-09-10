@@ -2,12 +2,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.m
 import {Game} from './game.js';
 import {PostFX} from './graphics.js';
 import {math} from './math.js';
-import {visibility} from './visibility.js';
-import {particles} from './particles.js';
-import {blaster} from './blaster.js';
+import {VisibilityGrid} from './visibility.js';
+import {ParticleSystem} from './particles.js';
+import {BlasterSystem} from './blaster.js';
 import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/loaders/OBJLoader.js';
 
-const _NUM_BOIDS = 300;
+const _NUM_BOIDS = 10;
 const _BOID_SPEED = 25;
 const _BOID_ACCELERATION = _BOID_SPEED / 2.5;
 const _BOID_FORCE_MAX = _BOID_ACCELERATION / 20.0;
@@ -54,7 +54,7 @@ class LineRenderer {
 
 class ExplodeParticles {
   constructor(game) {
-    this._particleSystem = new particles.ParticleSystem(
+    this._particleSystem = new ParticleSystem(
         game, {texture: "./resources/blaster.jpg"});
     this._particles = [];
   }
@@ -435,13 +435,13 @@ class OpenWorldDemo extends Game {
 
   _CreateEntities() {
     // This is 2D but eh, whatever.
-    this._visibilityGrid = new visibility.VisibilityGrid(
+    this._visibilityGrid = new VisibilityGrid(
         [new THREE.Vector3(-500, 0, -500), new THREE.Vector3(500, 0, 500)],
         [100, 100]);
 
     this._explosionSystem = new ExplodeParticles(this);
 
-    this._blasters = new blaster.BlasterSystem(
+    this._blasters = new BlasterSystem(
         this, {texture: "./resources/blaster.jpg"});
   }
 
