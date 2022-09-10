@@ -1,7 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
 import {GUI} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/libs/dat.gui.module.js';
 import {game} from './game.js';
-import {graphics} from './graphics.js';
 import {math} from './math.js';
 import {visibility} from './visibility.js';
 

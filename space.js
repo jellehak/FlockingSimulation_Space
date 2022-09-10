@@ -1,13 +1,11 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
-import {game} from './game.js';
-import {graphics} from './graphics.js';
+import {Game} from './game.js';
+import {PostFX} from './graphics.js';
 import {math} from './math.js';
 import {visibility} from './visibility.js';
 import {particles} from './particles.js';
 import {blaster} from './blaster.js';
 import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/loaders/OBJLoader.js';
-
-let _APP = null;
 
 const _NUM_BOIDS = 300;
 const _BOID_SPEED = 25;
@@ -382,7 +380,7 @@ class Boid {
 }
 
 
-class OpenWorldDemo extends game.Game {
+class OpenWorldDemo extends Game {
   constructor() {
     super();
   }
@@ -391,7 +389,7 @@ class OpenWorldDemo extends game.Game {
     this._entities = [];
 
     this._bloomPass = this._graphics.AddPostFX(
-        graphics.PostFX.UnrealBloomPass,
+        PostFX.UnrealBloomPass,
         {
             threshold: 0.75,
             strength: 2.5,
@@ -403,7 +401,7 @@ class OpenWorldDemo extends game.Game {
         });
 
     this._glitchPass = this._graphics.AddPostFX(
-        graphics.PostFX.GlitchPass, {});
+        PostFX.GlitchPass, {});
     this._glitchCooldown = 15;
 
     this._glitchPass.enabled = false;
@@ -530,7 +528,7 @@ class OpenWorldDemo extends game.Game {
 
 
 function _Main() {
-  _APP = new OpenWorldDemo();
+  window.app = new OpenWorldDemo();
 }
 
 _Main();
