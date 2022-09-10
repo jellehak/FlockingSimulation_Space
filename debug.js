@@ -1,8 +1,8 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
 import {GUI} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/libs/dat.gui.module.js';
-import {game} from './game.js';
+import {Game} from './game.js';
 import {math} from './math.js';
-import {visibility} from './visibility.js';
+import {VisibilityGrid} from './visibility.js';
 
 let _APP = null;
 
@@ -230,58 +230,13 @@ class Boid {
     return pointAhead.multiplyScalar(_BOID_FORCE_WANDER);
   }
 
-
-
-
-
-
-  _CalculateSeparationForce() {
-    totalForce = 0;
-    for (every boid in the area) {
-      totalForce += (ourPosition - theirPosition) / distanceBetween;
-    }
-    return totalForce;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // _CalculateSeparationForce() {
+  //   totalForce = 0;
+  //   for (every boid in the area) {
+  //     totalForce += (ourPosition - theirPosition) / distanceBetween;
+  //   }
+  //   return totalForce;
+  // }
 
   _CalculateSeparationForce(local) {
     const forceVector = new THREE.Vector3(0, 0, 0);
@@ -340,12 +295,10 @@ class Boid {
 }
 
 
-class DebugDemo extends game.Game {
+class DebugDemo extends Game {
   constructor() {
     super();
-  }
-
-  _OnInitialize() {
+  
     this._entities = [];
 
     this._guiParams = {
@@ -379,7 +332,7 @@ class DebugDemo extends game.Game {
     plane.rotation.x = -Math.PI / 2;
     this._graphics.Scene.add(plane);
 
-    this._visibilityGrid = new visibility.VisibilityGrid(
+    this._visibilityGrid = new VisibilityGrid(
         [new THREE.Vector3(-500, 0, -500), new THREE.Vector3(500, 0, 500)],
         [100, 100]);
     this._graphics._camera.position.set(0, 50, 0);
