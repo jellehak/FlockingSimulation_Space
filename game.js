@@ -3,10 +3,6 @@ import { Graphics } from "./graphics.js";
 
 export class Game {
   constructor() {
-    this._Initialize();
-  }
-
-  _Initialize() {
     this._graphics = new Graphics(this);
     if (!this._graphics.Initialize()) {
       this._DisplayError("WebGL2 is not available.");
@@ -16,7 +12,6 @@ export class Game {
     this._controls = this._CreateControls();
     this._previousRAF = null;
 
-    this._OnInitialize();
     this._RAF();
   }
 
