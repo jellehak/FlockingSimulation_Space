@@ -24,10 +24,6 @@ gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
 
 export class ParticleSystem {
   constructor(game, params) {
-    this._Initialize(game, params);
-  }
-
-  _Initialize(game, params) {
     const uniforms = {
       pointTexture: {
         value: new THREE.TextureLoader().load(params.texture),

@@ -11,37 +11,29 @@ export const PostFX = {
   GlitchPass: GlitchPass,
 };
 export class Graphics {
-  constructor(game) {}
-
   Initialize() {
     if (!WEBGL.isWebGL2Available()) {
       return false;
     }
 
-    this._threejs = new THREE.WebGLRenderer({
+    const renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
-    this._threejs.shadowMap.enabled = true;
-    this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
-    this._threejs.setPixelRatio(window.devicePixelRatio);
-    this._threejs.setSize(window.innerWidth, window.innerHeight);
+    this._threejs = renderer
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const target = document.getElementById("target");
-    target.appendChild(this._threejs.domElement);
+    const target = document.body // getElementById("target");
+    target.appendChild(renderer.domElement);
 
     this._stats = new Stats();
     target.appendChild(this._stats.dom);
 
-    window.addEventListener(
-      "resize",
-      () => {
-        this._OnWindowResize();
-      },
-      false
-    );
-
     const fov = 60;
-    const aspect = 1920 / 1080;
+    // const aspect = 1920 / 1080;
+    const aspect = window.innerWidth / window.innerHeight;
     const near = 1.0;
     const far = 1000.0;
     this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -51,9 +43,19 @@ export class Graphics {
 
     this._CreateLights();
 
-    const composer = new EffectComposer(this._threejs);
+    const composer = new EffectComposer(renderer);
     this._composer = composer;
     this._composer.addPass(new RenderPass(this._scene, this._camera));
+
+    this._OnWindowResize();
+
+    window.addEventListener(
+      "resize",
+      () => {
+        this._OnWindowResize();
+      },
+      false
+    );
 
     return true;
   }
@@ -75,17 +77,17 @@ export class Graphics {
     light.shadow.camera.bottom = -200;
     this._scene.add(light);
 
-    light = new THREE.DirectionalLight(0x404040, 1, 100);
-    light.position.set(-100, 100, -100);
-    light.target.position.set(0, 0, 0);
-    light.castShadow = false;
-    this._scene.add(light);
+    // light = new THREE.DirectionalLight(0x404040, 1, 100);
+    // light.position.set(-100, 100, -100);
+    // light.target.position.set(0, 0, 0);
+    // light.castShadow = false;
+    // this._scene.add(light);
 
-    light = new THREE.DirectionalLight(0x404040, 1, 100);
-    light.position.set(100, 100, -100);
-    light.target.position.set(0, 0, 0);
-    light.castShadow = false;
-    this._scene.add(light);
+    // light = new THREE.DirectionalLight(0x404040, 1, 100);
+    // light.position.set(100, 100, -100);
+    // light.target.position.set(0, 0, 0);
+    // light.castShadow = false;
+    // this._scene.add(light);
   }
 
   AddPostFX(passClass, params) {
@@ -102,6 +104,7 @@ export class Graphics {
     this._camera.updateProjectionMatrix();
     this._threejs.setSize(window.innerWidth, window.innerHeight);
     this._composer.setSize(window.innerWidth, window.innerHeight);
+    // console.log(window.innerWidth, window.innerHeight)
   }
 
   get Scene() {

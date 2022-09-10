@@ -480,7 +480,9 @@ class OpenWorldDemo extends Game {
       cruiser.rotation.x = Math.PI / 2;
       cruiser.scale.setScalar(10, 10, 10);
       cruiser.updateWorldMatrix();
-      this._graphics.Scene.add(cruiser);
+      const container = new THREE.Object3D()
+      container.add(cruiser)
+      this._graphics.Scene.add(container);
 
       cruiser.geometry.computeBoundingBox();
       const b = cruiser.geometry.boundingBox
