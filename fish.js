@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
-import {game} from './game.js';
+import {Game} from './game.js';
 import {math} from './math.js';
-import {visibility} from './visibility.js';
+import {VisibilityGrid} from './visibility.js';
 import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/loaders/OBJLoader.js';
 
 let _APP = null;
@@ -306,7 +306,7 @@ class Boid {
 }
 
 
-class FishDemo extends game.Game {
+class FishDemo extends Game {
   constructor() {
     super();
   }
@@ -351,7 +351,7 @@ class FishDemo extends game.Game {
     plane.rotation.x = -Math.PI / 2;
     this._graphics.Scene.add(plane);
 
-    this._visibilityGrid = new visibility.VisibilityGrid(
+    this._visibilityGrid = new VisibilityGrid(
         [new THREE.Vector3(-500, 0, -500), new THREE.Vector3(500, 0, 500)],
         [100, 100]);
 
