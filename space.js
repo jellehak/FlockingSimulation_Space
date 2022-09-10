@@ -1,11 +1,11 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
-import {Game} from './game.js';
-import {PostFX} from './graphics.js';
-import {math} from './math.js';
-import {VisibilityGrid} from './visibility.js';
-import {ParticleSystem} from './particles.js';
-import {BlasterSystem} from './blaster.js';
-import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/loaders/OBJLoader.js';
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js";
+import { Game } from "./game.js";
+import { PostFX } from "./graphics.js";
+import { math } from "./math.js";
+import { VisibilityGrid } from "./visibility.js";
+import { ParticleSystem } from "./particles.js";
+import { BlasterSystem } from "./blaster.js";
+import { OBJLoader } from "https://cdn.jsdelivr.net/npm/three@0.112.1/examples/jsm/loaders/OBJLoader.js";
 
 const _NUM_BOIDS = 10;
 const _BOID_SPEED = 25;
@@ -17,7 +17,6 @@ const _BOID_FORCE_SEPARATION = 20;
 const _BOID_FORCE_COLLISION = 50;
 const _BOID_FORCE_COHESION = 5;
 const _BOID_FORCE_WANDER = 3;
-
 
 class LineRenderer {
   constructor(game) {
@@ -41,8 +40,9 @@ class LineRenderer {
 
     let material = this._materials[hexColour];
     if (!material) {
-      this._materials[hexColour] = new THREE.LineBasicMaterial(
-          {color: hexColour});
+      this._materials[hexColour] = new THREE.LineBasicMaterial({
+        color: hexColour,
+      });
       material = this._materials[hexColour];
     }
 
@@ -54,8 +54,9 @@ class LineRenderer {
 
 class ExplodeParticles {
   constructor(game) {
-    this._particleSystem = new ParticleSystem(
-        game, {texture: "./resources/blaster.jpg"});
+    this._particleSystem = new ParticleSystem(game, {
+      texture: "./resources/blaster.jpg",
+    });
     this._particles = [];
   }
 
@@ -64,15 +65,15 @@ class ExplodeParticles {
       const p = this._particleSystem.CreateParticle();
       p.Position.copy(origin);
       p.Velocity = new THREE.Vector3(
-          math.rand_range(-1, 1),
-          math.rand_range(-1, 1),
-          math.rand_range(-1, 1)
+        math.rand_range(-1, 1),
+        math.rand_range(-1, 1),
+        math.rand_range(-1, 1)
       );
       p.Velocity.normalize();
       p.Velocity.multiplyScalar(125);
       p.TotalLife = 2.0;
       p.Life = p.TotalLife;
-      p.Colours = [new THREE.Color(0xFF8000), new THREE.Color(0x800000)];
+      p.Colours = [new THREE.Color(0xff8000), new THREE.Color(0x800000)];
       p.Sizes = [3, 12];
       p.Size = p.Sizes[0];
       this._particles.push(p);
@@ -80,7 +81,7 @@ class ExplodeParticles {
   }
 
   Update(timeInSeconds) {
-    this._particles = this._particles.filter(p => {
+    this._particles = this._particles.filter((p) => {
       return p.Alive;
     });
     for (const p of this._particles) {
@@ -96,32 +97,34 @@ class ExplodeParticles {
     }
     this._particleSystem.Update();
   }
-};
-
+}
 
 class Boid {
   constructor(game, params) {
     this._mesh = new THREE.Mesh(
-        params.geometry,
-        new THREE.MeshStandardMaterial({color: 0x808080}));
+      params.geometry,
+      new THREE.MeshStandardMaterial({ color: 0x808080 })
+    );
     this._mesh.castShadow = true;
     this._mesh.receiveShadow = false;
 
     this._group = new THREE.Group();
     this._group.add(this._mesh);
     this._group.position.set(
-        math.rand_range(-250, 250),
-        math.rand_range(-250, 250),
-        math.rand_range(-250, 250));
+      math.rand_range(-250, 250),
+      math.rand_range(-250, 250),
+      math.rand_range(-250, 250)
+    );
     this._direction = new THREE.Vector3(
-        math.rand_range(-1, 1),
-        math.rand_range(-1, 1),
-        math.rand_range(-1, 1));
+      math.rand_range(-1, 1),
+      math.rand_range(-1, 1),
+      math.rand_range(-1, 1)
+    );
     this._velocity = this._direction.clone();
 
     const speedMultiplier = math.rand_range(params.speedMin, params.speedMax);
     this._maxSteeringForce = params.maxSteeringForce * speedMultiplier;
-    this._maxSpeed  = params.speed * speedMultiplier;
+    this._maxSpeed = params.speed * speedMultiplier;
     this._acceleration = params.acceleration * speedMultiplier;
 
     const scale = 1.0 / speedMultiplier;
@@ -132,7 +135,9 @@ class Boid {
     this._game = game;
     game._graphics.Scene.add(this._group);
     this._visibilityIndex = game._visibilityGrid.UpdateItem(
-        this._mesh.uuid, this);
+      this._mesh.uuid,
+      this
+    );
 
     this._wanderAngle = 0;
     this._seekGoal = params.seekGoal;
@@ -143,14 +148,14 @@ class Boid {
   DisplayDebug() {
     const geometry = new THREE.SphereGeometry(10, 64, 64);
     const material = new THREE.MeshBasicMaterial({
-      color: 0xFF0000,
+      color: 0xff0000,
       transparent: true,
       opacity: 0.25,
     });
     const mesh = new THREE.Mesh(geometry, material);
     this._group.add(mesh);
 
-    this._mesh.material.color.setHex(0xFF0000);
+    this._mesh.material.color.setHex(0xff0000);
     this._displayDebug = true;
     this._lineRenderer = new LineRenderer(this._game);
   }
@@ -158,10 +163,12 @@ class Boid {
   _UpdateDebug(local) {
     this._lineRenderer.Reset();
     this._lineRenderer.Add(
-        this.Position, this.Position.clone().add(this._velocity),
-        0xFFFFFF);
+      this.Position,
+      this.Position.clone().add(this._velocity),
+      0xffffff
+    );
     for (const e of local) {
-      this._lineRenderer.Add(this.Position, e.Position, 0x00FF00);
+      this._lineRenderer.Add(this.Position, e.Position, 0x00ff00);
     }
   }
 
@@ -183,7 +190,9 @@ class Boid {
 
   Step(timeInSeconds) {
     const local = this._game._visibilityGrid.GetLocalEntities(
-        this.Position, 15);
+      this.Position,
+      15
+    );
 
     this._ApplySteering(timeInSeconds, local);
 
@@ -192,10 +201,15 @@ class Boid {
     this._group.position.add(frameVelocity);
 
     this._group.quaternion.setFromUnitVectors(
-        new THREE.Vector3(0, 1, 0), this.Direction);
+      new THREE.Vector3(0, 1, 0),
+      this.Direction
+    );
 
     this._visibilityIndex = this._game._visibilityGrid.UpdateItem(
-        this._mesh.uuid, this, this._visibilityIndex);
+      this._mesh.uuid,
+      this,
+      this._visibilityIndex
+    );
 
     if (this._displayDebug) {
       this._UpdateDebug(local);
@@ -221,8 +235,7 @@ class Boid {
       p.End = this.Position.clone();
       p.Velocity = this.Direction.clone().multiplyScalar(300);
       p.Length = 50;
-      p.Colours = [
-          this._params.colour.clone(), new THREE.Color(0.0, 0.0, 0.0)];
+      p.Colours = [this._params.colour.clone(), new THREE.Color(0.0, 0.0, 0.0)];
       p.Life = 2.0;
       p.TotalLife = 2.0;
       p.Width = 0.25;
@@ -298,9 +311,10 @@ class Boid {
   _ApplyWander() {
     this._wanderAngle += 0.1 * math.rand_range(-2 * Math.PI, 2 * Math.PI);
     const randomPointOnCircle = new THREE.Vector3(
-        Math.cos(this._wanderAngle),
-        0,
-        Math.sin(this._wanderAngle));
+      Math.cos(this._wanderAngle),
+      0,
+      Math.sin(this._wanderAngle)
+    );
     const pointAhead = this._direction.clone();
     pointAhead.multiplyScalar(5);
     pointAhead.add(randomPointOnCircle);
@@ -316,14 +330,16 @@ class Boid {
     const forceVector = new THREE.Vector3(0, 0, 0);
     for (let e of local) {
       const distanceToEntity = Math.max(
-          e.Position.distanceTo(this.Position) - 1.5 * (this.Radius + e.Radius),
-          0.001);
+        e.Position.distanceTo(this.Position) - 1.5 * (this.Radius + e.Radius),
+        0.001
+      );
       const directionFromEntity = new THREE.Vector3().subVectors(
-          this.Position, e.Position);
-      const multiplier = (_BOID_FORCE_SEPARATION / distanceToEntity);
+        this.Position,
+        e.Position
+      );
+      const multiplier = _BOID_FORCE_SEPARATION / distanceToEntity;
       directionFromEntity.normalize();
-      forceVector.add(
-          directionFromEntity.multiplyScalar(multiplier));
+      forceVector.add(directionFromEntity.multiplyScalar(multiplier));
     }
     return forceVector;
   }
@@ -356,8 +372,9 @@ class Boid {
 
     averagePosition.multiplyScalar(1.0 / local.length);
 
-    const directionToAveragePosition = averagePosition.clone().sub(
-        this.Position);
+    const directionToAveragePosition = averagePosition
+      .clone()
+      .sub(this.Position);
     directionToAveragePosition.normalize();
     directionToAveragePosition.multiplyScalar(_BOID_FORCE_COHESION);
 
@@ -368,40 +385,33 @@ class Boid {
   }
 
   _ApplySeek(destination) {
-    const distance = Math.max(0,((
-        this.Position.distanceTo(destination) - 50) / 500)) ** 2;
+    const distance =
+      Math.max(0, (this.Position.distanceTo(destination) - 50) / 500) ** 2;
     const direction = destination.clone().sub(this.Position);
     direction.normalize();
 
-    const forceVector = direction.multiplyScalar(
-        _BOID_FORCE_ORIGIN * distance);
+    const forceVector = direction.multiplyScalar(_BOID_FORCE_ORIGIN * distance);
     return forceVector;
   }
 }
 
-
 class OpenWorldDemo extends Game {
   constructor() {
     super();
-  }
 
-  _OnInitialize() {
     this._entities = [];
 
-    this._bloomPass = this._graphics.AddPostFX(
-        PostFX.UnrealBloomPass,
-        {
-            threshold: 0.75,
-            strength: 2.5,
-            radius: 0,
-            resolution: {
-              x: 1024,
-              y: 1024,
-            }
-        });
+    this._bloomPass = this._graphics.AddPostFX(PostFX.UnrealBloomPass, {
+      threshold: 0.75,
+      strength: 2.5,
+      radius: 0,
+      resolution: {
+        x: 1024,
+        y: 1024,
+      },
+    });
 
-    this._glitchPass = this._graphics.AddPostFX(
-        PostFX.GlitchPass, {});
+    this._glitchPass = this._graphics.AddPostFX(PostFX.GlitchPass, {});
     this._glitchCooldown = 15;
 
     this._glitchPass.enabled = false;
@@ -423,12 +433,12 @@ class OpenWorldDemo extends Game {
   _LoadBackground() {
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
-        './resources/space-posx.jpg',
-        './resources/space-negx.jpg',
-        './resources/space-posy.jpg',
-        './resources/space-negy.jpg',
-        './resources/space-posz.jpg',
-        './resources/space-negz.jpg',
+      "./resources/space-posx.jpg",
+      "./resources/space-negx.jpg",
+      "./resources/space-posy.jpg",
+      "./resources/space-negy.jpg",
+      "./resources/space-posz.jpg",
+      "./resources/space-negz.jpg",
     ]);
     this._graphics._scene.background = texture;
   }
@@ -436,30 +446,34 @@ class OpenWorldDemo extends Game {
   _CreateEntities() {
     // This is 2D but eh, whatever.
     this._visibilityGrid = new VisibilityGrid(
-        [new THREE.Vector3(-500, 0, -500), new THREE.Vector3(500, 0, 500)],
-        [100, 100]);
+      [new THREE.Vector3(-500, 0, -500), new THREE.Vector3(500, 0, 500)],
+      [100, 100]
+    );
 
     this._explosionSystem = new ExplodeParticles(this);
 
-    this._blasters = new BlasterSystem(
-        this, {texture: "./resources/blaster.jpg"});
+    this._blasters = new BlasterSystem(this, {
+      texture: "./resources/blaster.jpg",
+    });
   }
 
   _CreateBoids(geometries) {
     const positions = [
-        new THREE.Vector3(-200, 50, -100),
-        new THREE.Vector3(0, 0, 0)];
+      new THREE.Vector3(-200, 50, -100),
+      new THREE.Vector3(0, 0, 0),
+    ];
     const colours = [
-        new THREE.Color(0.5, 0.5, 4.0),
-        new THREE.Color(4.0, 0.5, 0.5)
+      new THREE.Color(0.5, 0.5, 4.0),
+      new THREE.Color(4.0, 0.5, 0.5),
     ];
     for (let i = 0; i < 2; i++) {
       const p = positions[i];
       const cruiser = new THREE.Mesh(
-          geometries.cruiser,
-          new THREE.MeshStandardMaterial({
-              color: 0x404040
-          }));
+        geometries.cruiser,
+        new THREE.MeshStandardMaterial({
+          color: 0x404040,
+        })
+      );
       cruiser.position.set(p.x, p.y, p.z);
       cruiser.castShadow = true;
       cruiser.receiveShadow = true;
@@ -469,8 +483,9 @@ class OpenWorldDemo extends Game {
       this._graphics.Scene.add(cruiser);
 
       cruiser.geometry.computeBoundingBox();
-      const b = cruiser.geometry.boundingBox.clone().applyMatrix4(
-          cruiser.matrixWorld);
+      const b = cruiser.geometry.boundingBox
+        .clone()
+        .applyMatrix4(cruiser.matrixWorld);
 
       this._visibilityGrid.AddGlobalItem({
         Position: p,
@@ -489,7 +504,7 @@ class OpenWorldDemo extends Game {
         acceleration: _BOID_ACCELERATION,
         scale: 0.4,
         seekGoal: p,
-        colour: colours[i]
+        colour: colours[i],
       };
       for (let i = 0; i < _NUM_BOIDS; i++) {
         const e = new Boid(this, params);
@@ -526,9 +541,6 @@ class OpenWorldDemo extends Game {
   }
 }
 
+export const app = new OpenWorldDemo();
 
-function _Main() {
-  window.app = new OpenWorldDemo();
-}
-
-_Main();
+window.app = app
